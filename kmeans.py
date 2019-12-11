@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.io
 
 def distanceBetweenPointsAndCentroids(X, centroids, K):
 
@@ -20,7 +21,6 @@ def getGrp(X, dist):
         else:
             grp1.append(X[i])
     return [grp0, grp1]
-
 
 def getCentroid(grp):
     totalX = 0.0
@@ -53,9 +53,9 @@ X = np.array([[1,1], [2,1], [4,3], [5,4]])
 
 print(f'Printing data in X... {X} Dimensions of X {X.shape}')
 
-K = 2
+K = 3
 
-centroids = np.array([[1,1], [2,1]])
+centroids = np.array([[3,1], [2,1]])
 
 # plt.plot(X[:,0], X[:1], 'go')
 # plt.plot(initial_centroids[:,0], initial_centroids[:1], 'rx')
