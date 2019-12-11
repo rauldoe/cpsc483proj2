@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import scipy.io
 
 def distanceBetweenPointsAndCentroids(X, centroids, K):
@@ -12,7 +12,11 @@ def distanceBetweenPointsAndCentroids(X, centroids, K):
             dist[i, j] = np.linalg.norm(centroids[i] - X[j])
     return dist
 
-def getGrp(X, dist):
+def getGrp(X, dist, K):
+    groupList = []
+    for i in range(K):
+        groupList.append([])
+
     grp0 = []
     grp1 = []
     for i in range(len(dist[0])):
@@ -49,13 +53,17 @@ def isEqualGrpList(newGrpList, oldGrpList):
             return False
     return True
 
-X = np.array([[1,1], [2,1], [4,3], [5,4]])
+datafile = 'kmeansdata.mat'
+points = scipy.io.loadmat(datafile)
+
+# X = np.array([[1,1], [2,1], [4,3], [5,4]])
+X = points['X']
 
 print(f'Printing data in X... {X} Dimensions of X {X.shape}')
 
 K = 3
 
-centroids = np.array([[3,1], [2,1]])
+centroids = np.array([[3,3], [6,2], [8,5]])
 
 # plt.plot(X[:,0], X[:1], 'go')
 # plt.plot(initial_centroids[:,0], initial_centroids[:1], 'rx')
@@ -68,10 +76,13 @@ oldGrpList = None
 while doStop == False:
     dist = distanceBetweenPointsAndCentroids(X, centroids, K)
 
-    grpList = getGrp(X, dist)
+    grpList = getGrp(X, dist, K)
 
     c0 = getCentroid(grpList[0])
     c1 = getCentroid(grpList[1])
+
+    #for i in range(K):
+    #    centroids[i] = grpList[i]
 
     centroids[0] = c0
     centroids[1] = c1
