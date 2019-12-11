@@ -54,7 +54,10 @@ def isEqualGrpList(newGrpList, oldGrpList):
     return True
 
 datafile = 'kmeansdata.mat'
+datafileNew = 'kmeansdata_new.mat'
 points = scipy.io.loadmat(datafile)
+
+# scipy.io.savemat(datafileNew, points)
 
 # X = np.array([[1,1], [2,1], [4,3], [5,4]])
 X = points['X']
