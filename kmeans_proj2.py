@@ -1,30 +1,34 @@
 import numpy as np
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import scipy.io
 
-def distanceBetweenPointsAndCentroids(X, centroids, K):
+def distanceBetweenPointsAndCentroids(X, centroids, K, dist):
 
     num_points = len(X)
     print(f'Total number of points in the dataset, ie. X is {num_points}')
 
-    for i in range(K):
-        for j in range(num_points):
-            dist[i, j] = np.linalg.norm(centroids[i] - X[j])
+    for indexOfCentroids in range(K):
+        for indexOfPoints in range(num_points):
+            dist[indexOfCentroids, indexOfPoints] = np.linalg.norm(centroids[indexOfCentroids] - X[indexOfPoints])
     return dist
 
-def getGrp(X, dist, K):
-    groupList = []
-    for i in range(K):
-        groupList.append([])
+def getCentroidMemberships(X, dist, K):
+    centroidMemberships = []
+    for _ in range(K):
+        centroidMemberships.append([])
 
-    grp0 = []
-    grp1 = []
-    for i in range(len(dist[0])):
-        if (dist[0][i] < dist[1][i]):
-            grp0.append(X[i])
-        else:
-            grp1.append(X[i])
-    return [grp0, grp1]
+    for indexOPoints in range(len(dist[0])):
+        minDistanceBetweenCentroids = dist[0][indexOPoints]
+        minIndexOfCentroids = 0
+        
+        for indexOfCentroids in range(1,K):
+            if (dist[indexOfCentroids, indexOPoints] < minDistanceBetweenCentroids):
+                minDistanceBetweenCentroids = dist[indexOfCentroids][indexOPoints]
+                minIndexOfCentroids = indexOfCentroids
+
+        centroidMemberships[minIndexOfCentroids].append(X[indexOPoints])
+
+    return centroidMemberships
 
 def getCentroid(grp):
     totalX = 0.0
@@ -71,29 +75,30 @@ centroids = np.array([[3,3], [6,2], [8,5]])
 # plt.plot(X[:,0], X[:1], 'go')
 # plt.plot(initial_centroids[:,0], initial_centroids[:1], 'rx')
 
-dist = np.zeros((K, len(X)))
+numberOfPoints = len(X)
+dist = np.zeros((K, numberOfPoints))
 
 doStop = False
 
 oldGrpList = None
 while doStop == False:
-    dist = distanceBetweenPointsAndCentroids(X, centroids, K)
+    dist = distanceBetweenPointsAndCentroids(X, centroids, K, dist)
 
-    grpList = getGrp(X, dist, K)
+    grpList = getCentroidMemberships(X, dist, K)
 
-    c0 = getCentroid(grpList[0])
-    c1 = getCentroid(grpList[1])
+    # c0 = getCentroid(grpList[0])
+    # c1 = getCentroid(grpList[1])
 
-    #for i in range(K):
-    #    centroids[i] = grpList[i]
+    for i in range(K):
+        centroids[i] = getCentroid(grpList[i])
 
-    centroids[0] = c0
-    centroids[1] = c1
+    # centroids[0] = c0
+    # centroids[1] = c1
 
     if (oldGrpList is not None and isEqualGrpList(grpList, oldGrpList)):
         doStop = True
     else:
         oldGrpList = grpList
 
-print(f'c0: {centroids[0]}, c1: {centroids[1]}')
+print(f'c0: {centroids[0]}, c1: {centroids[1]}, c2: {centroids[2]}')
 print(oldGrpList)
