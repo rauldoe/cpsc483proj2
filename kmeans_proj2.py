@@ -1,11 +1,11 @@
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import scipy.io
 
 def distanceBetweenPointsAndCentroids(X, centroids, K, dist):
 
     num_points = len(X)
-    print(f'Total number of points in the dataset, ie. X is {num_points}')
+    # print(f'Total number of points in the dataset, ie. X is {num_points}')
 
     for indexOfCentroids in range(K):
         for indexOfPoints in range(num_points):
@@ -66,7 +66,7 @@ points = scipy.io.loadmat(datafile)
 # X = np.array([[1,1], [2,1], [4,3], [5,4]])
 X = points['X']
 
-print(f'Printing data in X... {X} Dimensions of X {X.shape}')
+# print(f'Printing data in X... {X} Dimensions of X {X.shape}')
 
 K = 3
 
@@ -92,6 +92,8 @@ while doStop == False:
     for i in range(K):
         centroids[i] = getCentroid(grpList[i])
 
+    print(f'c0: {centroids[0]}, c1: {centroids[1]}, c2: {centroids[2]}')
+    
     # centroids[0] = c0
     # centroids[1] = c1
 
@@ -100,5 +102,5 @@ while doStop == False:
     else:
         oldGrpList = grpList
 
-print(f'c0: {centroids[0]}, c1: {centroids[1]}, c2: {centroids[2]}')
-print(oldGrpList)
+
+#print(oldGrpList)
