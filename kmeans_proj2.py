@@ -1,6 +1,19 @@
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import scipy.io
+
+# def f(i):
+#     return i * i + 3 * i - 2 if i > 0 else i * 5 + 8
+
+# fv = np.vectorize(f)  # or use a different name if you want to keep the original f
+
+# result_array = fv(centroids)  # if A is your Numpy array
+
+# squarer = lambda t: t ** 2
+# sv = np.vectorize(squarer)
+
+# result_array = sv(centroids)
+# print(result_array)
 
 def distanceBetweenPointsAndCentroids(X, centroids, K, dist):
 
@@ -12,7 +25,7 @@ def distanceBetweenPointsAndCentroids(X, centroids, K, dist):
             dist[indexOfCentroids, indexOfPoints] = np.linalg.norm(centroids[indexOfCentroids] - X[indexOfPoints])
     return dist
 
-def getCentroidMemberships(X, dist, K):
+def selectCentroidMemberships(X, dist, K):
     centroidMemberships = []
     for _ in range(K):
         centroidMemberships.append([])
@@ -30,32 +43,14 @@ def getCentroidMemberships(X, dist, K):
 
     return centroidMemberships
 
-def getCentroid(grp):
+def recalculateCentroid(centroidMembership):
     totalX = 0.0
     totalY = 0.0
-    for i in range(len(grp)):
-        totalX += grp[i][0]
-        totalY += grp[i][1]
+    for i in range(len(centroidMembership)):
+        totalX += centroidMembership[i][0]
+        totalY += centroidMembership[i][1]
 
-    return [totalX/len(grp), totalY/len(grp)]
-
-def isEqual(arr0, arr1):
-    return (arr0[0] == arr1[0]) and (arr0[1] == arr1[1])
-
-def isEqualGrpList(newGrpList, oldGrpList):
-    if (len(newGrpList[0]) != len(oldGrpList[0])):
-        return False
-    if (len(newGrpList[1]) != len(oldGrpList[1])):
-        return False
-
-    for i in range(len(newGrpList[0])):
-        if (not isEqual(newGrpList[0][i], oldGrpList[0][i])):
-            return False
-
-    for i in range(len(newGrpList[1])):
-        if (not isEqual(newGrpList[1][i], oldGrpList[1][i])):
-            return False
-    return True
+    return [totalX/len(centroidMembership), totalY/len(centroidMembership)]
 
 datafile = 'kmeansdata.mat'
 datafileNew = 'kmeansdata_new.mat'
@@ -80,27 +75,20 @@ dist = np.zeros((K, numberOfPoints))
 
 doStop = False
 
-oldGrpList = None
+currentCentroids = centroids.copy()
 while doStop == False:
     dist = distanceBetweenPointsAndCentroids(X, centroids, K, dist)
 
-    grpList = getCentroidMemberships(X, dist, K)
-
-    # c0 = getCentroid(grpList[0])
-    # c1 = getCentroid(grpList[1])
+    centroidMemberships = selectCentroidMemberships(X, dist, K)
 
     for i in range(K):
-        centroids[i] = getCentroid(grpList[i])
+        centroids[i] = recalculateCentroid(centroidMemberships[i])
 
     print(f'c0: {centroids[0]}, c1: {centroids[1]}, c2: {centroids[2]}')
     
-    # centroids[0] = c0
-    # centroids[1] = c1
-
-    if (oldGrpList is not None and isEqualGrpList(grpList, oldGrpList)):
+    if (np.array_equal(centroids, currentCentroids)):
         doStop = True
     else:
-        oldGrpList = grpList
-
+        currentCentroids = centroids.copy()
 
 #print(oldGrpList)
