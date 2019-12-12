@@ -75,6 +75,9 @@ dist = np.zeros((K, numberOfPoints))
 
 doStop = False
 
+plt.plot(X[:, 0], X[:, 1], 'go')
+plt.plot(centroids[:, 0], centroids[:, 1], 'rx')
+
 currentCentroids = centroids.copy()
 while doStop == False:
     dist = distanceBetweenPointsAndCentroids(X, centroids, K, dist)
@@ -86,6 +89,9 @@ while doStop == False:
 
     print(f'c0: {centroids[0]}, c1: {centroids[1]}, c2: {centroids[2]}')
     
+    plt.plot(X[:, 0], X[:, 1], 'go')
+    plt.plot(centroids[:, 0], centroids[:, 1], 'rx')
+
     if (np.array_equal(centroids, currentCentroids)):
         doStop = True
     else:
