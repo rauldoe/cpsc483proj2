@@ -57,6 +57,12 @@ def doPlot(plt, X, centroids):
     plt.plot(centroids[:, 0], centroids[:, 1], 'rx')
     plt.show()
 
+def doPlotWithOriginal(plt, X, originalCentroids, centroids):
+    plt.plot(X[:, 0], X[:, 1], 'go')
+    plt.plot(originalCentroids[:, 0], originalCentroids[:, 1], 'rx')
+    plt.plot(centroids[:, 0], centroids[:, 1], c='b', marker='x', linestyle='None')
+    plt.show()
+
 datafile = 'kmeansdata.mat'
 datafileNew = 'kmeansdata_new.mat'
 points = scipy.io.loadmat(datafile)
@@ -80,9 +86,11 @@ dist = np.zeros((K, numberOfPoints))
 
 doStop = False
 
+originalCentroids = centroids.copy()
+currentCentroids = centroids.copy()
+
 doPlot(plt, X, centroids)
 
-currentCentroids = centroids.copy()
 while doStop == False:
     dist = distanceBetweenPointsAndCentroids(X, centroids, K, dist)
 
@@ -93,7 +101,7 @@ while doStop == False:
 
     print(f'c0: {centroids[0]}, c1: {centroids[1]}, c2: {centroids[2]}')
     
-    doPlot(plt, X, centroids)
+    doPlotWithOriginal(plt, X, originalCentroids, centroids)
 
     if (np.array_equal(centroids, currentCentroids)):
         doStop = True
