@@ -52,15 +52,35 @@ def recalculateCentroid(centroidMembership):
 
     return [totalX/len(centroidMembership), totalY/len(centroidMembership)]
 
-def doPlot(plt, X, centroids):
-    plt.plot(X[:, 0], X[:, 1], 'go')
-    plt.plot(centroids[:, 0], centroids[:, 1], 'rx')
+def plotCentroids(plt, centroids, colors):
+    
+    for i in range(len(centroids)):
+        plt.scatter(centroids[i, 0], centroids[i, 1], c=colors[i], marker='x', linestyle='None', s=100)
+    
+    return plt
+
+def doPlotCentroids(plt, centroids, colors):
+    plt = plotCentroids(plt, centroids, colors)
+    plt.xlim([-1, 10])
+    plt.ylim([-1, 10])
     plt.show()
 
-def doPlotWithOriginal(plt, X, originalCentroids, centroids):
+def doInitialPlot(plt, centroids, colors, X):
+    
     plt.plot(X[:, 0], X[:, 1], 'go')
-    plt.plot(originalCentroids[:, 0], originalCentroids[:, 1], 'rx')
-    plt.plot(centroids[:, 0], centroids[:, 1], c='b', marker='x', linestyle='None')
+    plt = plotCentroids(plt, centroids, colors)
+    plt.xlim([-1, 10])
+    plt.ylim([-1, 10])
+    plt.show()
+
+def doPlotMatchingXWithCentroid(plt, centroids, colors, centroidMemberships):
+    
+    for i in range(len(centroids)):
+        plt.scatter(centroids[i, 0], centroids[i, 1], c=colors[i], marker='x', linestyle='None', s=100)
+        membership = np.array(centroidMemberships[i])
+        plt.plot(membership[:,0], membership[:,1], c=colors[i], marker='o', linestyle='None')
+    plt.xlim([-1, 10])
+    plt.ylim([-1, 10])
     plt.show()
 
 datafile = 'kmeansdata.mat'
@@ -88,8 +108,11 @@ doStop = False
 
 originalCentroids = centroids.copy()
 currentCentroids = centroids.copy()
+colors=["#0000FF", "#00FF00", "#FF0066"]
 
-doPlot(plt, X, centroids)
+doInitialPlot(plt, centroids, colors, X)
+
+doOnce = False
 
 while doStop == False:
     dist = distanceBetweenPointsAndCentroids(X, centroids, K, dist)
@@ -101,11 +124,17 @@ while doStop == False:
 
     print(f'c0: {centroids[0]}, c1: {centroids[1]}, c2: {centroids[2]}')
     
-    doPlotWithOriginal(plt, X, originalCentroids, centroids)
+    if (not doOnce):
+        doPlotMatchingXWithCentroid(plt, centroids, colors, centroidMemberships)
+        doOnce = True
+
+    doPlotCentroids(plt, centroids, colors)
 
     if (np.array_equal(centroids, currentCentroids)):
         doStop = True
     else:
         currentCentroids = centroids.copy()
+
+doPlotMatchingXWithCentroid(plt, currentCentroids, colors, centroidMemberships)
 
 #print(oldGrpList)
