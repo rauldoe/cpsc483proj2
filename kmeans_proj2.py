@@ -52,6 +52,11 @@ def recalculateCentroid(centroidMembership):
 
     return [totalX/len(centroidMembership), totalY/len(centroidMembership)]
 
+def doPlot(plt, X, centroids):
+    plt.plot(X[:, 0], X[:, 1], 'go')
+    plt.plot(centroids[:, 0], centroids[:, 1], 'rx')
+    plt.show()
+
 datafile = 'kmeansdata.mat'
 datafileNew = 'kmeansdata_new.mat'
 points = scipy.io.loadmat(datafile)
@@ -75,8 +80,7 @@ dist = np.zeros((K, numberOfPoints))
 
 doStop = False
 
-plt.plot(X[:, 0], X[:, 1], 'go')
-plt.plot(centroids[:, 0], centroids[:, 1], 'rx')
+doPlot(plt, X, centroids)
 
 currentCentroids = centroids.copy()
 while doStop == False:
@@ -89,8 +93,7 @@ while doStop == False:
 
     print(f'c0: {centroids[0]}, c1: {centroids[1]}, c2: {centroids[2]}')
     
-    plt.plot(X[:, 0], X[:, 1], 'go')
-    plt.plot(centroids[:, 0], centroids[:, 1], 'rx')
+    doPlot(plt, X, centroids)
 
     if (np.array_equal(centroids, currentCentroids)):
         doStop = True
