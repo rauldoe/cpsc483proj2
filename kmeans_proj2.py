@@ -84,22 +84,13 @@ def doPlotMatchingXWithCentroid(plt, centroids, colors, centroidMemberships):
     plt.show()
 
 datafile = 'kmeansdata.mat'
-datafileNew = 'kmeansdata_new.mat'
 points = scipy.io.loadmat(datafile)
 
-# scipy.io.savemat(datafileNew, points)
-
-# X = np.array([[1,1], [2,1], [4,3], [5,4]])
 X = points['X']
-
-# print(f'Printing data in X... {X} Dimensions of X {X.shape}')
 
 K = 3
 
 centroids = np.array([[3,3], [6,2], [8,5]])
-
-# plt.plot(X[:,0], X[:1], 'go')
-# plt.plot(initial_centroids[:,0], initial_centroids[:1], 'rx')
 
 numberOfPoints = len(X)
 dist = np.zeros((K, numberOfPoints))
@@ -136,5 +127,3 @@ while doStop == False:
         currentCentroids = centroids.copy()
 
 doPlotMatchingXWithCentroid(plt, currentCentroids, colors, centroidMemberships)
-
-#print(oldGrpList)
